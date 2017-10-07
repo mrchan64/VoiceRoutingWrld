@@ -31,18 +31,7 @@ micbutton.on('mouseover', function(){
 	}, divHeightChangeSpeed);
 })
 
-micbutton.on('mouseout', function(){
-	if (recording) return
-	console.log('out')
-	whiteone.stop();
-	whiteone.animate({
-		'opacity': '1'
-	}, colorChangeSpeed);
-	micdiv.stop();
-	micdiv.animate({
-		'height': '0px'
-	}, divHeightChangeSpeed);
-})
+mouseOutOn();
 
 micbutton.on('click', function(){
 	//micbutton.off('mouseout');
@@ -62,20 +51,39 @@ micbutton.on('click', function(){
 			'opacity': '0'
 		});
 		recording = false;
-		recorder.end();
+		var buffer = recorder.end();
 		startLoadSym(); //starts the loading symbol
-
-		//get text
-
-		text = "lorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsum lorem ipsulorem ipsulorem ipsulorem ipsu"
-		display.html(text);
-
-
-		//ends the loading symbol after everything is done
-		//endLoadSym();
+		console.log(buffer);
+		$.ajax({
+			url:"/speechtotext",
+			data:{buffer:buffer},
+			success:function(data){
+				display.html(data.text);
+				endLoadSym();
+			},
+			error:function(){
+				console.log("error u suck");
+			},
+			method:"POST"
+		})
 
 	}
 })
+
+function mouseOutOn(){
+	micbutton.on('mouseout', function(){
+		if (recording) return
+		console.log('out')
+		whiteone.stop();
+		whiteone.animate({
+			'opacity': '1'
+		}, colorChangeSpeed);
+		micdiv.stop();
+		micdiv.animate({
+			'height': '0px'
+		}, divHeightChangeSpeed);
+	})
+}
 
 function pulseAnimation(){
 	whiteone.stop();
@@ -95,7 +103,7 @@ function RecordAudio(stream, cfg) {
 	var context = new AudioContext();
 	var source = context.createMediaStreamSource(stream);
     var recLength = 0,
-      recBuffers = [];
+      recBuffers = ArrayBuffer(0);
 
     // create a ScriptProcessorNode
     if(!context.createScriptProcessor){
@@ -121,6 +129,7 @@ function RecordAudio(stream, cfg) {
     	recBuffers = [];
     }
     this.end = function(){
+    	console.log(recBuffers);
     	return recBuffers;
     }
 }
@@ -130,6 +139,7 @@ function getRequest(){
 }
 
 function startLoadSym(){
+	micbutton.off('mouseout');
 	loadsym.animate({
 		'opacity': '1'
 	}, colorChangeSpeed);
@@ -137,6 +147,7 @@ function startLoadSym(){
 }
 
 function endLoadSym(){
+	mouseOutOn();
 	loadsym.animate({
 		'opacity': '0'
 	}, colorChangeSpeed);

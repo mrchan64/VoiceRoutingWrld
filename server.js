@@ -10,5 +10,15 @@ setTimeout(function(){
   mic.end(console.log);
 }, 5000);*/
 
+EXS.app.post('/speechtotext', function(req,res){
+  function callback(inputString){
+  	var obj = {text: inputString};
+  	res.sendJSON(obj);
+  }
+  var b = req.body.buffer;
+  console.log(req.body);
+  S2T.onceProcess(callback, {capture: "buffer", buffer: b});
+})
+
 //test the sifting algorithm here
 TSA.findCommand("");
