@@ -63,8 +63,28 @@ body {
   box-shadow: 6px 5px 25px -4px rgba(0,0,0,0.77);
   background-color: red;
 }
+#voice img.mic{
+  width: 51px;
+  height: 50px;
+  background-color: transparent;
+  pointer-events: none;
+  -moz-transition: transform 1s;
+  -webkit-transition: transform 1s;
+  -webkit-animation: none;
+  transition: transform infinite;
+}
+
 
 #whiteone{
   background-color: white;
   pointer-events: none;
+}
+
+@-webkit-keyframes rotate {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to { 
+        -webkit-transform: rotate(360deg);
+    }
 }
