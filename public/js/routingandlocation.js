@@ -27,6 +27,40 @@ function onIndoorEntityClicked(event) {
       }
 }
 
+
+     function moveUp() {
+        map.indoors.moveUp();
+      }
+
+      function moveDown() {
+        map.indoors.moveDown();
+      }
+
+      function exitIndoors() {
+        map.indoors.exit();
+      }
+
+      function toggleIndoorButtonVisibility() {
+        var element = document.getElementById("floorButtons");
+        element.style.visibility = element.style.visibility == "visible" ? "hidden" : "visible";
+      }
+
+      function onIndoorMapEntered(event) {
+        toggleIndoorButtonVisibility();
+      }
+
+      function onIndoorMapExited(event) {
+        toggleIndoorButtonVisibility();
+
+        for (var routeIndex = 0; routeIndex < routeLines.length; ++routeIndex)
+        {
+          map.removeLayer(routeLines[routeIndex]);
+        }
+      }
+
+      map.indoors.on("indoormapenter", onIndoorMapEntered);
+      map.indoors.on("indoormapexit", onIndoorMapExited);
+
 locationServices.formRequest = function(searchTerm){
   var finalLink = link+"?address="+searchTerm+"&"+googleKey;
   var ret = "";
@@ -373,6 +407,9 @@ locationServices.getIndoorRoute = function(startName, endName) {
          }
      }
 
-  map.routes.getRoute([startLoc, endLoc], _onRoutesLoaded);
+     var getRoute = function() {
+       map.routes.getRoute([startLoc, endLoc], _onRoutesLoaded);
+     }
+
 
 }
