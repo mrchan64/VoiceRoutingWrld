@@ -12,6 +12,11 @@ var divHeightChangeSpeed = 650
 var recording = false
 var pulse = null
 
+var recorder = null;
+var usermedia = navigator.getUserMedia({audio: true}, function(stream){
+	recorder = new RecordAudio(stream);
+}, function(error){})
+
 micbutton.on('mouseover', function(){
 	if (recording) return
 	console.log('in')
@@ -44,6 +49,7 @@ micbutton.on('click', function(){
 		recording = true;
 		pulseAnimation();
 		pulse = setInterval(pulseAnimation, colorChangeSpeed);
+		recorder.start();
 	} else {
 		//recording ended by click
 		recording = false;
@@ -55,9 +61,8 @@ micbutton.on('click', function(){
 		whiteone.css({
 			'opacity': '0'
 		});
-
-		//sends request
-
+		recording = false;
+		recorder.end();
 	}
 })
 
@@ -74,6 +79,40 @@ function pulseAnimation(){
 	}, colorChangeSpeed/2);
 }
 
+function RecordAudio(stream, cfg) {
+
+	var context = new AudioContext();
+	var source = context.createMediaStreamSource(stream);
+    var recLength = 0,
+      recBuffers = [];
+
+    // create a ScriptProcessorNode
+    if(!context.createScriptProcessor){
+       this.node = context.createJavaScriptNode(4096, 1, 1);
+    } else {
+       this.node = context.createScriptProcessor(4096, 1, 1);
+    }
+
+    // listen to the audio data, and record into the buffer
+    this.node.onaudioprocess = function(e){
+    	if(!recording)return;
+      recBuffers.push(e.inputBuffer.getChannelData(0));
+      recLength += e.inputBuffer.getChannelData(0).length;
+    }
+
+    // connect the ScriptProcessorNode with the input audio
+    source.connect(this.node);
+    // if the ScriptProcessorNode is not connected to an output the "onaudioprocess" event is not triggered in chrome
+    this.node.connect(context.destination);
+
+    this.start = function(){
+    	recLength = 0;
+    	recBuffers = [];
+    }
+    this.end = function(){
+    	return recBuffers;
+    }
+}
 function getRequest(){
 	//server request -> gets text
 	setTimeout()
