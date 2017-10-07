@@ -4,6 +4,7 @@ var link = "https://maps.googleapis.com/maps/api/geocode/json";
 var googleKey = "key=AIzaSyBb4UGmjxCC9vVr54OLyMtlSrLGORNi0sA";
 
 var locationServices = {};
+
 locationServices.formRequest = function(searchTerm){
   var finalLink = link+"?address="+searchTerm+"&"+googleKey;
   var ret = "";
@@ -50,4 +51,43 @@ locationServices.route = function(startName, endName){
 locationServices.getBuildingAtCoord = function(coord){
   var info = map.buildings.findBuildingAtLatLng(coord);
   console.log(info);
+}
+
+locationServices.getPOI = function() {
+
+
+
+  var poiApi = new WrldPoiApi(apiKey);
+
+
+
+      var markers = [];
+
+      function displaySearchResults(success, results) {
+          map.closePopup();
+          if (success) {
+              results.forEach(function(result) {
+                  var marker = L.marker([result["lat"], result["lon"]], {
+                     title: result["title"],
+                     elevation: result["height_offset"]
+                  }).addTo(map);
+
+                  markers.push(marker);
+              })
+          }
+          else {
+              map.openPopup("POI API query failed!", map.getCenter());
+          }
+      }
+
+      function searchPoisAroundClick(event) {
+          markers.forEach(function(marker) { marker.remove(); });
+          map.openPopup("Searching...", event.latlng);
+
+          var callback = displaySearchResults;
+          var options = { range: 500, number: 5 };
+          poiApi.searchTags([], event.latlng, callback, options);
+      }
+
+      map.on("click", searchPoisAroundClick);
 }
