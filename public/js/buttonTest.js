@@ -1,6 +1,7 @@
 var micbutton = $('#recorder');
 var whiteone = $('#whiteone');
 var loadsym = $('#loadsymbol');
+var display = $('#display');
 whiteone.css('background-color', 'white')
 var micdiv = $('#voice')
 
@@ -53,7 +54,6 @@ micbutton.on('click', function(){
 	} else {
 		//recording ended by click
 		recording = false;
-		appearSpinLoadSym();
 
 		//ends the animation
 		clearInterval(pulse);
@@ -63,6 +63,17 @@ micbutton.on('click', function(){
 		});
 		recording = false;
 		recorder.end();
+		startLoadSym(); //starts the loading symbol
+
+		//get text
+
+		text = "lorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsulorem ipsum lorem ipsulorem ipsulorem ipsulorem ipsu"
+		display.html(text);
+
+
+		//ends the loading symbol after everything is done
+		//endLoadSym();
+
 	}
 })
 
@@ -118,10 +129,16 @@ function getRequest(){
 	setTimeout()
 }
 
-function appearSpinLoadSym(){
+function startLoadSym(){
+	loadsym.animate({
+		'opacity': '1'
+	}, colorChangeSpeed);
 	loadsym.css({"-webkit-animation": "rotate 2s infinite linear"})
 }
 
 function endLoadSym(){
+	loadsym.animate({
+		'opacity': '0'
+	}, colorChangeSpeed);
 	loadsym.css({"-webkit-animation": "none"})
 }
