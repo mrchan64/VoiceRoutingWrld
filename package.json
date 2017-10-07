@@ -1,0 +1,29 @@
+{
+  "name": "calhackstttcbb",
+  "version": "1.0.0",
+  "description": "Calhacks Github for TTTCBB",
+  "main": "server.js",
+  "dependencies": {
+    "@google-cloud/speech": "^0.10.3",
+    "express": "^4.16.1",
+    "jade": "^1.11.0",
+    "jquery": "^3.2.1",
+    "node-microphone": "^0.1.3",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrchan64/TonTonTonCowBearBear.git"
+  },
+  "author": "Matthew Chan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mrchan64/TonTonTonCowBearBear/issues"
+  },
+  "homepage": "https://github.com/mrchan64/TonTonTonCowBearBear#readme"
+}

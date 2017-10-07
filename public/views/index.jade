@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    meta(name='author', content='mc')
+    title Matthew Chan
+    link(href='css/style.css', rel='stylesheet')
+    script(src='https://cdn-webgl.wrld3d.com/wrldjs/dist/latest/wrld.js')
+    script(src='https://cdn-webgl.wrld3d.com/wrldjs/addons/searchbar/latest/searchbar.js')
+    link(href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.css', rel='stylesheet')
+    link(href='https://cdn-webgl.wrld3d.com/wrldjs/addons/resources/latest/css/wrld.css', rel='stylesheet')
+  body
+    #map
+    #speedometer Hit Space and Arrow Key
+    #searchbar.wrld-widget-container
+    != gen.js()
