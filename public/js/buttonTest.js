@@ -1,5 +1,6 @@
 var micbutton = $('#recorder');
 var whiteone = $('#whiteone');
+var loadsym = $('#loadsymbol');
 whiteone.css('background-color', 'white')
 var micdiv = $('#voice')
 
@@ -28,6 +29,7 @@ micbutton.on('mouseover', function(){
 		'height': '180px'
 	}, divHeightChangeSpeed);
 })
+
 micbutton.on('mouseout', function(){
 	if (recording) return
 	console.log('out')
@@ -40,14 +42,20 @@ micbutton.on('mouseout', function(){
 		'height': '0px'
 	}, divHeightChangeSpeed);
 })
+
 micbutton.on('click', function(){
+	//micbutton.off('mouseout');
 	if (!recording) {
 		recording = true;
 		pulseAnimation();
 		pulse = setInterval(pulseAnimation, colorChangeSpeed);
 		recorder.start();
 	} else {
-		//recording = false;
+		//recording ended by click
+		recording = false;
+		appearSpinLoadSym();
+
+		//ends the animation
 		clearInterval(pulse);
 		whiteone.stop();
 		whiteone.css({
@@ -57,6 +65,7 @@ micbutton.on('click', function(){
 		recorder.end();
 	}
 })
+
 function pulseAnimation(){
 	whiteone.stop();
 	whiteone.animate({
@@ -103,4 +112,16 @@ function RecordAudio(stream, cfg) {
     this.end = function(){
     	return recBuffers;
     }
+}
+function getRequest(){
+	//server request -> gets text
+	setTimeout()
+}
+
+function appearSpinLoadSym(){
+	loadsym.css({"-webkit-animation": "rotate 2s infinite linear"})
+}
+
+function endLoadSym(){
+	loadsym.css({"-webkit-animation": "none"})
 }
