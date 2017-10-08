@@ -7,6 +7,8 @@ var micdiv = $('#voice')
 
 micdiv.css('left', ($(window).width()-micdiv.width())/2)
 
+var recLink = 'ws'+String(window.location).replace('http', '').replace('1500', '3000');
+
 var colorChangeSpeed = 500
 var divHeightChangeSpeed = 650 
 
@@ -16,8 +18,10 @@ var pulse = null
 var recorder = new RecordAudio();
 var receiver = new WebSocket('ws://localhost:3000');
 receiver.addEventListener('message', function(event){
-	console.log(event.data);
-	display.html(event.data.interp)
+	data = JSON.parse(event.data);
+	console.log(data);
+	display.html(data.interp);
+	finalParse(data.command);
 	endLoadSym();
 })
 

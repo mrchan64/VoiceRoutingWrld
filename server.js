@@ -16,7 +16,7 @@ EXS.bscallback = function(data){
     console.log("ALERT: Sending String: "+string)
     console.log("ALERT: Found Commands: "+command)
     EXS.wssconns.forEach(function(conn){
-      conn.send({interp: string, command: command});
+      conn.send(JSON.stringify({interp: string, command: command}));
     })
   }
   S2T.onceProcess(callback, {
