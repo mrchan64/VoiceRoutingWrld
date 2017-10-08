@@ -22,7 +22,7 @@ receiver.addEventListener('message', function(event){
 	data = JSON.parse(event.data);
 	console.log(data);
 	display.html(data.interp);
-	//finalParse(data.command);
+	finalParse(data.command);
 	endLoadSym();
 })
 
