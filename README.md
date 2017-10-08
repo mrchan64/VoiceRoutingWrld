@@ -10,12 +10,12 @@ Through the use of WRLD, Google Cloud, and an amalgamation of other API's, we de
 
 Some key features we have:
 
--Recent Twitter activity map
--Route functionality indoors between two room names in the same building
--Route functionality indoors between two room names in different buildings
--Optimized POI routing for user convenience
--Live routing from user's current position to given destination
--Complete Voice control for all of the above features and more
+- Recent Twitter activity map
+- Route functionality indoors between two room names in the same building
+- Route functionality indoors between two room names in different buildings
+- Optimized POI routing for user convenience
+- Live routing from user's current position to given destination
+- Complete Voice control for all of the above features and more
 
 ### Inspiration
 
@@ -38,7 +38,7 @@ In part 2, we analyze the supplied buffer. We parse the text command and test ag
 
 Part 3 involves calling the appropriate method to convert the text command into a WRLD interaction. This step is simple for most cases, directly calling the appropriate WRLD method. However, several cases are trickier. The most complex is the routing case, in which the program must not only determine the starting and ending destinations, but also whether these destinations lie indoors or outdoors (for a total of 4 different possible cases). This is further complicated by attempts at error-correction: the Hamming distance of these patterns is greatly reduced and more measures must be taken to preserve original intent.
 
-Part 4 is straightforward. We resest necessary variables and objects in the rendered WRLD to prepare for the user's next interaction.
+Part 4 is straightforward. We reset necessary variables and objects in the rendered WRLD to prepare for the user's next interaction.
 
 ### Uses of the Social Media Extension
 
