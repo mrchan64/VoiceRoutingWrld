@@ -37,6 +37,9 @@ micbutton.on('mouseover', function(){
 	micdiv.animate({
 		'height': '180px'
 	}, divHeightChangeSpeed);
+	display.stop();
+	display.css('opacity', 1);
+	display.html("");
 })
 
 mouseOutOn();
@@ -78,6 +81,8 @@ function mouseOutOn(){
 		micdiv.animate({
 			'height': '0px'
 		}, divHeightChangeSpeed);
+		display.stop()
+		display.animate({'opacity': 0},500);
 	})
 }
 
