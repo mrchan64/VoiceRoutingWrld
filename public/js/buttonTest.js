@@ -13,10 +13,8 @@ var divHeightChangeSpeed = 650
 var recording = false
 var pulse = null
 
-var recorder = null;
-var usermedia = navigator.getUserMedia({audio: true}, function(stream){
-	recorder = new RecordAudio(stream);
-}, function(error){})
+var recorder = new RecordAudio();
+var receiver = new WebSocket('ws://localhost:3000');
 
 micbutton.on('mouseover', function(){
 	if (recording) return
@@ -51,21 +49,14 @@ micbutton.on('click', function(){
 			'opacity': '0'
 		});
 		recording = false;
-		var buffer = recorder.end();
 		startLoadSym(); //starts the loading symbol
-		console.log(buffer);
-		$.ajax({
-			url:"/speechtotext",
-			data:{buffer:buffer},
-			success:function(data){
-				display.html(data.text);
-				endLoadSym();
-			},
-			error:function(){
-				console.log("error u suck");
-			},
-			method:"POST"
+		recorder.end();
+		receiver.addEventListener('message', function(event){
+			console.log(data)
+			display.html(event.data)
+			endLoadSym();
 		})
+		//computation.send(buffer);
 
 	}
 })
@@ -98,40 +89,67 @@ function pulseAnimation(){
 	}, colorChangeSpeed/2);
 }
 
-function RecordAudio(stream, cfg) {
+function RecordAudio() {
+	var link = 'ws'+String(window.location).replace('http','')+'computation';
+	console.log(link)
+  var client = new BinaryClient(link);
+  var that = this;
 
-	var context = new AudioContext();
-	var source = context.createMediaStreamSource(stream);
-    var recLength = 0,
-      recBuffers = ArrayBuffer(0);
+  client.on('open', function() {
+    var Stream = that.Stream = client.createStream();
 
-    // create a ScriptProcessorNode
-    if(!context.createScriptProcessor){
-       this.node = context.createJavaScriptNode(4096, 1, 1);
-    } else {
-       this.node = context.createScriptProcessor(4096, 1, 1);
+    if (!navigator.getUserMedia)
+      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+    navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+    if (navigator.getUserMedia) {
+      navigator.getUserMedia({audio:true}, success, function(e) {
+        alert('Error capturing audio.');
+      });
+    } else alert('getUserMedia not supported in this browser.');
+
+    var recording = false;
+
+    that.start = function() {
+      recording = true;
     }
 
-    // listen to the audio data, and record into the buffer
-    this.node.onaudioprocess = function(e){
-    	if(!recording)return;
-      recBuffers.push(e.inputBuffer.getChannelData(0));
-      recLength += e.inputBuffer.getChannelData(0).length;
+    that.end = function() {
+      recording = false;
+      Stream.end();
     }
 
-    // connect the ScriptProcessorNode with the input audio
-    source.connect(this.node);
-    // if the ScriptProcessorNode is not connected to an output the "onaudioprocess" event is not triggered in chrome
-    this.node.connect(context.destination);
+    function success(e) {
+      audioContext = window.AudioContext || window.webkitAudioContext;
+      context = new audioContext();
 
-    this.start = function(){
-    	recLength = 0;
-    	recBuffers = [];
+      // the sample rate is in context.sampleRate
+      audioInput = context.createMediaStreamSource(e);
+
+      var bufferSize = 2048;
+      proc = context.createScriptProcessor(bufferSize, 1, 1);
+
+      proc.onaudioprocess = function(e){
+        if(!recording) return;
+        console.log ('recording');
+        var left = e.inputBuffer.getChannelData(0);
+        Stream.write(convertoFloat32ToInt16(left));
+      }
+
+      audioInput.connect(proc)
+      proc.connect(context.destination); 
     }
-    this.end = function(){
-    	console.log(recBuffers);
-    	return recBuffers;
+
+    function convertoFloat32ToInt16(buffer) {
+      var l = buffer.length;
+      var buf = new Int16Array(l)
+
+      while (l--) {
+        buf[l] = buffer[l]*0xFFFF;    //convert to 16 bit
+      }
+      return buf.buffer
     }
+  });
 }
 function getRequest(){
 	//server request -> gets text

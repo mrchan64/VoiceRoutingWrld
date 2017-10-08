@@ -1,6 +1,6 @@
 var S2T = require('./lib/speechToText'),
-    TSA = require('./lib/textSiftAlgo');
-    EXS = require('./lib/expressServer')
+    TSA = require('./lib/textSiftAlgo'),
+    EXS = require('./lib/expressServer');
 
 /*var mic = new S2T.MicrophoneProcess();
 console.log('started')
@@ -10,15 +10,21 @@ setTimeout(function(){
   mic.end(console.log);
 }, 5000);*/
 
-EXS.app.post('/speechtotext', function(req,res){
-  function callback(inputString){
-  	var obj = {text: inputString};
-  	res.sendJSON(obj);
+EXS.bscallback = function(data){
+  console.log('hiiiiii')
+  var callback = function(string){
+    console.log('sfsjdfojs '+string)
+    EXS.wssconns.forEach(function(conn){
+      conn.send(string);
+      console.log('seeenddddd '+string)
+    })
   }
-  var b = req.body.buffer;
-  console.log(req.body);
-  S2T.onceProcess(callback, {capture: "buffer", buffer: b});
-})
+  S2T.onceProcess(callback, {
+    capture: 'buffer',
+    buffer: data
+  })
+  console.log('oyyyyyyyy')
+}
 
 //test the sifting algorithm here
 TSA.findCommand("");
