@@ -1,6 +1,7 @@
 var S2T = require('./lib/speechToText'),
     TSA = require('./lib/textSiftAlgo'),
-    EXS = require('./lib/expressServer');
+    EXS = require('./lib/expressServer'),
+    TSS = require('./lib/twitterServerSearch')
 
 /*var mic = new S2T.MicrophoneProcess();
 console.log('started')
@@ -25,5 +26,12 @@ EXS.bscallback = function(data){
   })
 }
 
+EXS.app.post('/twitter', function(req, res){
+  var callback = function(statuses){
+    res.json(statuses);
+  };
+  TSS.searchQ(req.body.query, req.body.lat, req.body.lng, req.body.r, callback);
+})
+
 //test the sifting algorithm here
-TSA.findCommand("");
+//TSA.findCommand("");
