@@ -648,5 +648,9 @@ var finalParse = function(call) {
       // call simulated or real
       l.routeSimPOI();
       //l.routeToPOI();
+      break;
+    case 5:
+      twitmarkers.query(call[1]);
+      break;
   }
 }
