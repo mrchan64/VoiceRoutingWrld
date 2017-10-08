@@ -5,6 +5,8 @@
   "main": "server.js",
   "dependencies": {
     "@google-cloud/speech": "^0.10.3",
+    "binaryjs": "^0.2.1",
+    "body-parser": "^1.18.2",
     "express": "^4.16.1",
     "jade": "^1.11.0",
     "jquery": "^3.2.1",
