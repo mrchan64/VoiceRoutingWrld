@@ -19,7 +19,7 @@ body {
   /*background-image: url("https://images5.alphacoders.com/345/345584.jpg");
   background-size: cover;
   background-position: center;*/
-  
+
 }
 
 #map {
@@ -91,11 +91,21 @@ body {
   pointer-events: none;
 }
 
+#floorButtons {
+       position: absolute;
+       z-index: 20;
+     }
+
+    #floorButtons button {
+       display: block;
+       width: 100%;
+     }
+
 @-webkit-keyframes rotate {
     from {
         -webkit-transform: rotate(0deg);
     }
-    to { 
+    to {
         -webkit-transform: rotate(360deg);
     }
 }

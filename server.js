@@ -26,3 +26,4 @@ EXS.bscallback = function(data){
 }
 
 //test the sifting algorithm here
+TSA.findCommand("");
