@@ -1,4 +1,4 @@
-# The Voice Heard 'Round WRLD
+# The Voice Heard 'Round the WRLD
 
 October 2017
 
@@ -44,7 +44,7 @@ Part 4 is straightforward. We reset necessary variables and objects in the rende
 
 The social media extension has two main goals. The first is the visualization of data to help find patterns through big data regarding certain topics. The user searches through various tweets and retweets under a certain hashtag in a certain time-periods. This data is not limited to large analysis for use either; our second goal is to demonstrate its use to everyday users. Users can use it to follow the travels of a friend in a 3-dimensional world, see the divide of opinions over different states under a political hashtag, receive alerts of nearby activity (or potential protests, local distasters, etc.), and much, much more.
 
-Though related, the Cisco Spark Implemenation has a different intention, more directed towards businesses. Companies can view the location data and timestamps of employees automatically to determine peak efficiency hour, or when employees have been less honest with their bosses about meeting attendance. This helps strengthen the bond between manager and employee, keeping both connected and raising overall efficiency. Note that this is a work in progress.
+Though related, the Cisco Spark Implementation has a different intention, more directed towards businesses. Companies can view the location data and timestamps of employees automatically to determine peak efficiency hour, or when employees have been less honest with their bosses about meeting attendance. This helps strengthen the bond between manager and employee, keeping both connected and raising overall efficiency. Note that this is a work in progress.
 
 ### Built With:
 
