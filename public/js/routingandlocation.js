@@ -145,11 +145,27 @@ locationServices.route = function(startName, endName){
 //Works!
 locationServices.getBuilding = function(name) {
   var loc = sN[name];
-  if (!loc) {
-    map.setView(loc);
+  console.log(loc);
+  if (loc) {
+    var z = loc[2];
+    var f = map.indoors.getFloor().getFloorIndex();
+    console.log(z);
+    console.log(f);
+    while (f < z) {
+      moveUp();
+      console.log("moving up");
+      f += 1;
+    }
+    while (f > z) {
+      moveDown();
+      console.log("moving down");
+      f -= 1;
+    }
+    map.setView(loc, 28);
+
   } else {
     loc = locationServices.formRequest(name);
-    map.setView(loc);
+    map.setView(loc, 27);
     var building = map.buildings.findBuildingAtScreenPoint([0,0]);
 
     var buildingHighlight = L.Wrld.buildings.buildingHighlight(
@@ -171,6 +187,14 @@ locationServices.getBuildingAtCoord = function(coord){
 
 // For taking to another location from current location, specified by name.
 locationServices.routeFromUser = function(name){
+  console.log("beginning route from user");
+  console.log(map.indoors.isIndoors() && (sN[name] != null));
+  if (map.indoors.isIndoors() && sN[name] != null) {
+    console.log("switching from routefromuser");
+      locationServices.getIndoorRouteUser(name);
+  } else {
+    console.log("IN else statement.");
+
   var place = locationServices.formRequest(name);
   //var route =
   //locationServices.getUserPos();
@@ -208,6 +232,7 @@ locationServices.routeFromUser = function(name){
     /* geolocation IS NOT available */
     console.log("Location Services is not enabled.");
   }
+}
 }
 
 // For routing from current location to selected POI (take me there).
@@ -521,6 +546,61 @@ locationServices.getIndoorRoute = function(startName, endName) {
 
 }
 
+locationServices.getIndoorRouteUser = function(endName) {
+
+  var startLoc = map.getCenter();
+  //pos = {lat: pos[0], lng: pos[1]};
+  startLoc = [startLoc.lng, startLoc.lat, map.indoors.getFloor().getFloorIndex()];
+
+  var endLoc = sN[endName];
+  if (!endLoc) {
+    endLoc = locationServices.formRequest(endName);
+  }
+
+  console.log(startLoc, endLoc);
+
+  routeLines = [];
+
+
+     var _onRoutesLoaded = function(routes) {
+         /*routeLines.forEach(function(result) {
+           result.remove();
+         });*/
+         console.log("Inside _onRoutesLoaded");
+         // Each step in the route will be on a single floor.
+         for (var stepIndex = 0; stepIndex < routes[0].length; ++stepIndex) {
+           console.log("Step", stepIndex);
+            var step = routes[0][stepIndex];
+            var options = {};
+            if (step.indoorMapId) {
+               options.indoorMapId = step.indoorMapId;
+               options.indoorMapFloorId = step.indoorMapFloorId;
+             }
+            var routeLine = new L.polyline(step.points, options);
+            routeLine.addTo(map);
+            routeLines.push(routeLine);
+            console.log(routeLine);
+         }
+     }
+
+     //console.log(startMarker);
+
+     /*var startLoc = startMarker.getLatLng();
+
+     searchPoisAroundClick(userPos, endName);
+
+     var endLoc = startMarker.getLatLng();*/
+
+     var getRoute = function() {
+       map.routes.getRoute([startLoc, endLoc], _onRoutesLoaded);
+       console.log("Completed.");
+       map.setView(startLoc, 25);
+     }
+
+     console.log("Near completion.");
+     getRoute();
+}
+
 
 var finalParse = function(call) {
   var control = call[0];
@@ -528,10 +608,21 @@ var finalParse = function(call) {
   switch(control) {
     case 0:
       // Lookup destination
+      if (call[1].includes("the ")) {
+        call[1] = call[1].slice(4, call[1].length);
+      }
+      console.log(call[1]);
       l.getBuilding(call[1]);
       break;
     case 1:
       // Lookup start, route to dest
+      if (call[1].includes("the ")) {
+        call[1] = call[1].slice(4, call[1].length);
+      }
+      if (call[2].includes("the ")) {
+        call[2] = call[2].slice(4, call[2].length);
+      }
+      console.log(call[1], call[2]);
       if (map.indoors.isIndoors()) {
         l.getIndoorRoute(call[1], call[2]);
       } else {
@@ -540,6 +631,10 @@ var finalParse = function(call) {
       break;
     case 2:
       // Current location to destination
+      if (call[1].includes("the ")) {
+        call[1] = call[1].slice(4, call[1].length);
+      }
+      console.log(call[1]);
       l.routeFromUser(call[1]);
       break;
     case 3:
@@ -552,8 +647,6 @@ var finalParse = function(call) {
       // Straight to selected POI
       // call simulated or real
       l.routeSimPOI();
-      l.routeToPOI();
-
-
+      //l.routeToPOI();
   }
 }
