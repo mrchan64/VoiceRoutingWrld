@@ -161,11 +161,11 @@ locationServices.getBuilding = function(name) {
       console.log("moving down");
       f -= 1;
     }
-    map.setView(loc, 28);
+    map.setView(loc, 17);
 
   } else {
     loc = locationServices.formRequest(name);
-    map.setView(loc, 27);
+    map.setView(loc, 17);
     var building = map.buildings.findBuildingAtScreenPoint([0,0]);
 
     var buildingHighlight = L.Wrld.buildings.buildingHighlight(
