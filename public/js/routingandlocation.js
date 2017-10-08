@@ -35,6 +35,34 @@ var sN = {
 var startInd = 0;
 var endInd = 0;
 var control = 0;
+
+locationServices.formRequest = function(searchTerm){
+  var finalLink = link+"?address="+searchTerm+"&"+googleKey;
+  var ret = "";
+  $.ajax({
+    url: finalLink,
+    success: function(data){
+      ret = data.results[0].geometry.location;
+      console.log(data.results[0])
+    },
+    async: false
+  })
+  ret = [ret.lat, ret.lng];
+  return ret;
+}
+
+
+var cacheCompleteCallback = function(success) {
+        if (success) {
+          console.log("Caching complete");
+        } else {
+          console.log("Caching failed");
+        }
+      }
+      //map.precache([37.7952, -122.4028], 2000, cacheCompleteCallback);
+      map.precache(locationServices.formRequest("Berkeley Memorial Stadium"), 1000, cacheCompleteCallback);
+      map.precache(simPos, 1000, cacheCompleteCallback);
+
 /*function onIndoorEntityClicked(event) {
       var id = event.ids[0];
       if (control == 0) {
@@ -81,20 +109,6 @@ var control = 0;
       map.indoors.on("indoormapenter", onIndoorMapEntered);
       map.indoors.on("indoormapexit", onIndoorMapExited);
 
-locationServices.formRequest = function(searchTerm){
-  var finalLink = link+"?address="+searchTerm+"&"+googleKey;
-  var ret = "";
-  $.ajax({
-    url: finalLink,
-    success: function(data){
-      ret = data.results[0].geometry.location;
-      console.log(data.results[0])
-    },
-    async: false
-  })
-  ret = [ret.lat, ret.lng];
-  return ret;
-}
 
 locationServices.reverseForRoutes = function(item){
   var temp = [];
@@ -453,20 +467,27 @@ locationServices.getIndoorRoute = function(startName, endName) {
 */
   var startLoc = sN[startName];
   var endLoc = sN[endName];
-  routeLines = [];
+  console.log(startLoc, endLoc);
+  var routeLines = [];
 
 
      var _onRoutesLoaded = function(routes) {
+         /*routeLines.forEach(function(result) {
+           result.remove();
+         });*/
+         console.log("Inside _onRoutesLoaded");
          // Each step in the route will be on a single floor.
          for (var stepIndex = 0; stepIndex < routes[0].length; ++stepIndex) {
             var step = routes[0][stepIndex];
-            var routeLine = new L.polyline(step.points,
-            {
-              indoorMapId: step.indoorMapId,
-              indoorMapFloorId: step.indoorMapFloorId
-           });
+            var options = {};
+            if (step.indoorMapId) {
+               options.indoorMapId = step.indoorMapId;
+               options.indoorMapFloorId = step.indoorMapFloorId;
+             }
+            var routeLine = new L.polyline(step.points, options);
             routeLine.addTo(map);
             routeLines.push(routeLine);
+            console.log(routeLine);
          }
      }
 
@@ -480,8 +501,10 @@ locationServices.getIndoorRoute = function(startName, endName) {
 
      var getRoute = function() {
        map.routes.getRoute([startLoc, endLoc], _onRoutesLoaded);
+       console.log("Completed.");
      }
 
+     console.log("Near completion.");
      getRoute();
 
 
