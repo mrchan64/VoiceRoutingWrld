@@ -508,5 +508,31 @@ locationServices.getIndoorRoute = function(startName, endName) {
      console.log("Near completion.");
      getRoute();
 
+}
 
+
+var finalParse = function(call) {
+  var control = call[0];
+  var l = locationServices;
+  switch(control) {
+    case 0:
+      // Lookup destination
+      l.getBuilding(call[1]);
+      break;
+    case 1:
+      // Lookup start, route to dest
+      l.getRoute(call[1], call[2]);
+      break;
+    case 2:
+      // Current location to destination
+      l.routeFromUser(call[1]);
+      break;
+    case 3:
+      // Nearby POIs
+      l.getPOI(call[1]);
+      break;
+    //case 4:
+      //
+
+  }
 }
