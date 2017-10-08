@@ -28,7 +28,7 @@ var sN = {
   "public parking" : [-2.9821262, 56.4618466, 0],
   "cemetary" : [-2.9728872, 56.4614245, 0],
   "the great pirate adventure" : [-2.9688167, 56.4565028, 0],
-  "theater" : [-2.9783117, 56.4600344, 2],
+  "theater" : [-2.98304, 56.4613044, 2],
   "storage cupboard" : [-2.983122836389253, 56.461231653264029, 2]
 };
 
@@ -468,7 +468,7 @@ locationServices.getIndoorRoute = function(startName, endName) {
   var startLoc = sN[startName];
   var endLoc = sN[endName];
   console.log(startLoc, endLoc);
-  var routeLines = [];
+  routeLines = [];
 
 
      var _onRoutesLoaded = function(routes) {
@@ -478,6 +478,7 @@ locationServices.getIndoorRoute = function(startName, endName) {
          console.log("Inside _onRoutesLoaded");
          // Each step in the route will be on a single floor.
          for (var stepIndex = 0; stepIndex < routes[0].length; ++stepIndex) {
+           console.log("Step", stepIndex);
             var step = routes[0][stepIndex];
             var options = {};
             if (step.indoorMapId) {
