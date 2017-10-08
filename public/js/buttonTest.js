@@ -1,10 +1,13 @@
 var micbutton = $('#recorder');
 var whiteone = $('#whiteone');
 var loadsym = $('#loadsymbol');
+var display = $('#display');
 whiteone.css('background-color', 'white')
 var micdiv = $('#voice')
 
 micdiv.css('left', ($(window).width()-micdiv.width())/2)
+
+var recLink = 'ws'+String(window.location).replace('http', '').replace('1500', '3000');
 
 var colorChangeSpeed = 500
 var divHeightChangeSpeed = 650 
@@ -12,10 +15,15 @@ var divHeightChangeSpeed = 650
 var recording = false
 var pulse = null
 
-var recorder = null;
-var usermedia = navigator.getUserMedia({audio: true}, function(stream){
-	recorder = new RecordAudio(stream);
-}, function(error){})
+var recorder = new RecordAudio();
+var receiver = new WebSocket('ws://localhost:3000');
+receiver.addEventListener('message', function(event){
+	data = JSON.parse(event.data);
+	console.log(data);
+	display.html(data.interp);
+	finalParse(data.command);
+	endLoadSym();
+})
 
 micbutton.on('mouseover', function(){
 	if (recording) return
@@ -30,18 +38,7 @@ micbutton.on('mouseover', function(){
 	}, divHeightChangeSpeed);
 })
 
-micbutton.on('mouseout', function(){
-	if (recording) return
-	console.log('out')
-	whiteone.stop();
-	whiteone.animate({
-		'opacity': '1'
-	}, colorChangeSpeed);
-	micdiv.stop();
-	micdiv.animate({
-		'height': '0px'
-	}, divHeightChangeSpeed);
-})
+mouseOutOn();
 
 micbutton.on('click', function(){
 	//micbutton.off('mouseout');
@@ -53,7 +50,6 @@ micbutton.on('click', function(){
 	} else {
 		//recording ended by click
 		recording = false;
-		appearSpinLoadSym();
 
 		//ends the animation
 		clearInterval(pulse);
@@ -62,9 +58,27 @@ micbutton.on('click', function(){
 			'opacity': '0'
 		});
 		recording = false;
+		startLoadSym(); //starts the loading symbol
 		recorder.end();
+		//computation.send(buffer);
+
 	}
 })
+
+function mouseOutOn(){
+	micbutton.on('mouseout', function(){
+		if (recording) return
+		console.log('out')
+		whiteone.stop();
+		whiteone.animate({
+			'opacity': '1'
+		}, colorChangeSpeed);
+		micdiv.stop();
+		micdiv.animate({
+			'height': '0px'
+		}, divHeightChangeSpeed);
+	})
+}
 
 function pulseAnimation(){
 	whiteone.stop();
@@ -79,49 +93,85 @@ function pulseAnimation(){
 	}, colorChangeSpeed/2);
 }
 
-function RecordAudio(stream, cfg) {
+function RecordAudio() {
+	var link = 'ws'+String(window.location).replace('http','')+'computation';
+	console.log(link)
+  var client = new BinaryClient(link);
+  var that = this;
 
-	var context = new AudioContext();
-	var source = context.createMediaStreamSource(stream);
-    var recLength = 0,
-      recBuffers = [];
+  client.on('open', function() {
+    var Stream = that.Stream = client.createStream();
 
-    // create a ScriptProcessorNode
-    if(!context.createScriptProcessor){
-       this.node = context.createJavaScriptNode(4096, 1, 1);
-    } else {
-       this.node = context.createScriptProcessor(4096, 1, 1);
+    if (!navigator.getUserMedia)
+      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+    navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+    if (navigator.getUserMedia) {
+      navigator.getUserMedia({audio:true}, success, function(e) {
+        alert('Error capturing audio.');
+      });
+    } else alert('getUserMedia not supported in this browser.');
+
+    var recording = false;
+
+    that.start = function() {
+      recording = true;
     }
 
-    // listen to the audio data, and record into the buffer
-    this.node.onaudioprocess = function(e){
-    	if(!recording)return;
-      recBuffers.push(e.inputBuffer.getChannelData(0));
-      recLength += e.inputBuffer.getChannelData(0).length;
+    that.end = function() {
+      recording = false;
+      Stream.end();
     }
 
-    // connect the ScriptProcessorNode with the input audio
-    source.connect(this.node);
-    // if the ScriptProcessorNode is not connected to an output the "onaudioprocess" event is not triggered in chrome
-    this.node.connect(context.destination);
+    function success(e) {
+      audioContext = window.AudioContext || window.webkitAudioContext;
+      context = new audioContext();
 
-    this.start = function(){
-    	recLength = 0;
-    	recBuffers = [];
+      // the sample rate is in context.sampleRate
+      audioInput = context.createMediaStreamSource(e);
+
+      var bufferSize = 2048;
+      proc = context.createScriptProcessor(bufferSize, 1, 1);
+
+      proc.onaudioprocess = function(e){
+        if(!recording) return;
+        console.log ('recording');
+        var left = e.inputBuffer.getChannelData(0);
+        Stream.write(convertoFloat32ToInt16(left));
+      }
+
+      audioInput.connect(proc)
+      proc.connect(context.destination); 
     }
-    this.end = function(){
-    	return recBuffers;
+
+    function convertoFloat32ToInt16(buffer) {
+      var l = buffer.length;
+      var buf = new Int16Array(l)
+
+      while (l--) {
+        buf[l] = buffer[l]*0xFFFF;    //convert to 16 bit
+      }
+      return buf.buffer
     }
+  });
 }
 function getRequest(){
 	//server request -> gets text
 	setTimeout()
 }
 
-function appearSpinLoadSym(){
+function startLoadSym(){
+	micbutton.off('mouseout');
+	loadsym.animate({
+		'opacity': '1'
+	}, colorChangeSpeed);
 	loadsym.css({"-webkit-animation": "rotate 2s infinite linear"})
 }
 
 function endLoadSym(){
+	mouseOutOn();
+	loadsym.animate({
+		'opacity': '0'
+	}, colorChangeSpeed);
 	loadsym.css({"-webkit-animation": "none"})
 }
