@@ -1,7 +1,8 @@
 var apiKey = "60308764d26b82e014649973d6901157";
 
 var map = L.Wrld.map("map", apiKey, {
-  indoorsEnabled: true
+  indoorsEnabled: true,
+  closePopupOnClick: false
 });
 
 //var speedometer = document.getElementById('speedometer');
