@@ -144,18 +144,23 @@ locationServices.route = function(startName, endName){
 
 //Works!
 locationServices.getBuilding = function(name) {
-  var loc = locationServices.formRequest(name);
-  map.setView(loc);
-  var building = map.buildings.findBuildingAtScreenPoint([0,0]);
+  var loc = sN[name];
+  if (!loc) {
+    map.setView(loc);
+  } else {
+    loc = locationServices.formRequest(name);
+    map.setView(loc);
+    var building = map.buildings.findBuildingAtScreenPoint([0,0]);
 
-  var buildingHighlight = L.Wrld.buildings.buildingHighlight(
-      L.Wrld.buildings.buildingHighlightOptions()
-          .highlightBuildingAtLocation(loc)
-          .color([1.0, 0.0, 0.0, 0.5])
-      )
-      .addTo(map);
+    var buildingHighlight = L.Wrld.buildings.buildingHighlight(
+        L.Wrld.buildings.buildingHighlightOptions()
+            .highlightBuildingAtLocation(loc)
+            .color([1.0, 0.0, 0.0, 0.5])
+          )
+          .addTo(map);
 
-  lastMarker = 0;
+          lastMarker = 0;
+        }
 }
 
 // For debugging.
@@ -466,7 +471,13 @@ locationServices.getIndoorRoute = function(startName, endName) {
   searchPoisAroundClick(userPos, startName);
 */
   var startLoc = sN[startName];
+  if (!startLoc) {
+    locationServices.route(startName, endName);
+  }
   var endLoc = sN[endName];
+  if (!endLoc) {
+    endLoc = locationServices.formRequest(endName);
+  }
   console.log(startLoc, endLoc);
   routeLines = [];
 
@@ -521,7 +532,11 @@ var finalParse = function(call) {
       break;
     case 1:
       // Lookup start, route to dest
-      l.getRoute(call[1], call[2]);
+      if (map.indoors.isIndoors()) {
+        l.getIndoorRoute(call[1], call[2]);
+      } else {
+        l.getRoute(call[1], call[2]);
+      }
       break;
     case 2:
       // Current location to destination
@@ -529,10 +544,16 @@ var finalParse = function(call) {
       break;
     case 3:
       // Nearby POIs
-      l.getPOI(call[1]);
+      //call simulated or real
+      l.getPOI_sim();
+      //l.getPOI();
       break;
-    //case 4:
-      //
+    case 4:
+      // Straight to selected POI
+      // call simulated or real
+      l.routeSimPOI();
+      l.routeToPOI();
+
 
   }
 }
