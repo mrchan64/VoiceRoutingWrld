@@ -1,11 +1,5 @@
 # The Voice Heard 'Round WRLD
 
-Justin Wang, Amarinder Chahal, Darren Huang, Matthew Chan.
-
-## How to Get Goin'
-
-# The Voice Heard 'Round WRLD
-
 October 2017
 
 ### Authors
