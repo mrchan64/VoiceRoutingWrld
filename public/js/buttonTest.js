@@ -15,6 +15,11 @@ var pulse = null
 
 var recorder = new RecordAudio();
 var receiver = new WebSocket('ws://localhost:3000');
+receiver.addEventListener('message', function(event){
+	console.log(event.data);
+	display.html(event.data.interp)
+	endLoadSym();
+})
 
 micbutton.on('mouseover', function(){
 	if (recording) return
@@ -51,11 +56,6 @@ micbutton.on('click', function(){
 		recording = false;
 		startLoadSym(); //starts the loading symbol
 		recorder.end();
-		receiver.addEventListener('message', function(event){
-			console.log(data)
-			display.html(event.data)
-			endLoadSym();
-		})
 		//computation.send(buffer);
 
 	}

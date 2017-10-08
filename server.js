@@ -11,20 +11,18 @@ setTimeout(function(){
 }, 5000);*/
 
 EXS.bscallback = function(data){
-  console.log('hiiiiii')
   var callback = function(string){
-    console.log('sfsjdfojs '+string)
+    var command = TSA.findCommand(string);
+    console.log("ALERT: Sending String: "+string)
+    console.log("ALERT: Found Commands: "+command)
     EXS.wssconns.forEach(function(conn){
-      conn.send(string);
-      console.log('seeenddddd '+string)
+      conn.send({interp: string, command: command});
     })
   }
   S2T.onceProcess(callback, {
     capture: 'buffer',
     buffer: data
   })
-  console.log('oyyyyyyyy')
 }
 
 //test the sifting algorithm here
-TSA.findCommand("");
