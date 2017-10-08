@@ -3,19 +3,39 @@ var apiKey = "60308764d26b82e014649973d6901157";
 var link = "https://maps.googleapis.com/maps/api/geocode/json";
 var googleKey = "key=AIzaSyBb4UGmjxCC9vVr54OLyMtlSrLGORNi0sA";
 
+var poiApi = new WrldPoiApi(apiKey);
+
 var locationServices = {};
 var userPos = [];
+var routeLines = [];
+var routeLine = 0;
 
 var lastMarker = 0;
 
 var simPos = [56.4582, -2.9821];
 
-var sN = {};
+var sN = {
+  "basement" : [-2.978629, 56.46024, 0],
+  "server room" : [-2.9783117, 56.4600344, 2],
+  "car show" : [-2.9785011, 56.4599409, 2],
+  "storage cupboard" : [-2.9781151, 56.4599056, 2],
+  "casino" : [-2.9782947, 56.4600729, 1],
+  "the great dundee building" : [-2.9783764, 56.4601663, 0],
+  "balcony" : [-2.9780477, 56.4599637, 2],
+  "small meeting room" : [-2.9780219, 56.4600131, 2],
+  "server room" : [-2.9781385, 56.460101, 2],
+  "history exhibit" : [-2.9782053, 56.4601537, 2],
+  "public parking" : [-2.9821262, 56.4618466, 0],
+  "cemetary" : [-2.9728872, 56.4614245, 0],
+  "the great pirate adventure" : [-2.9688167, 56.4565028, 0],
+  "theater" : [-2.9783117, 56.4600344, 2],
+  "storage cupboard" : [-2.983122836389253, 56.461231653264029, 2]
+};
 
 var startInd = 0;
 var endInd = 0;
 var control = 0;
-function onIndoorEntityClicked(event) {
+/*function onIndoorEntityClicked(event) {
       var id = event.ids[0];
       if (control == 0) {
         startInd = [event.lat, event.lng, map.indoors.getFloor()];
@@ -25,7 +45,7 @@ function onIndoorEntityClicked(event) {
         control = 0;
         locationServices.route(startInd, endInd);
       }
-}
+}*/
 
 
      function moveUp() {
@@ -98,16 +118,17 @@ locationServices.route = function(startName, endName){
          options.indoorMapFloorId = step.indoorMapFloorId;
        }
        options.color = '#ffcc00';
-       var routeLine = new L.polyline(step.points, options);
+       routeLine = new L.polyline(step.points, options);
        routeLine.addTo(map);
     }
   }
   locationServices.getBuildingAtCoord(start);
   map.setView(start);
-  map.routes.getRoute(route,callback,function(error){console.log('dammit')});
+  map.routes.getRoute(route,callback,function(error){console.log('q')});
   lastMarker = 0;
 }
 
+//Works!
 locationServices.getBuilding = function(name) {
   var loc = locationServices.formRequest(name);
   map.setView(loc);
@@ -123,11 +144,13 @@ locationServices.getBuilding = function(name) {
   lastMarker = 0;
 }
 
+// For debugging.
 locationServices.getBuildingAtCoord = function(coord){
   var info = map.buildings.findBuildingAtLatLng(coord);
   lastMarker = 0;
 }
 
+// For taking to another location from current location, specified by name.
 locationServices.routeFromUser = function(name){
   var place = locationServices.formRequest(name);
   //var route =
@@ -142,7 +165,8 @@ locationServices.routeFromUser = function(name){
          options.indoorMapFloorId = step.indoorMapFloorId;
        }
        options.color = '#ffcc00';
-       var routeLine = new L.polyline(step.points, options);
+
+       routeLine = new L.polyline(step.points, options);
        routeLine.addTo(map);
     }
   }
@@ -167,6 +191,7 @@ locationServices.routeFromUser = function(name){
   }
 }
 
+// For routing from current location to selected POI (take me there).
 locationServices.routeToPOI = function() {
 
   if (lastMarker == 0) {
@@ -184,7 +209,7 @@ locationServices.routeToPOI = function() {
          options.indoorMapFloorId = step.indoorMapFloorId;
        }
        options.color = '#ffcc00';
-       var routeLine = new L.polyline(step.points, options);
+       routeLine = new L.polyline(step.points, options);
        routeLine.addTo(map);
     }
   }
@@ -214,6 +239,7 @@ locationServices.routeToPOI = function() {
   }
 }
 
+// Simulate routeToPOI with Dundee stuffies
 locationServices.routeSimPOI = function() {
   if (lastMarker == 0) {
     console.log("No last marker set.");
@@ -230,7 +256,7 @@ locationServices.routeSimPOI = function() {
          options.indoorMapFloorId = step.indoorMapFloorId;
        }
        options.color = '#ffcc00';
-       var routeLine = new L.polyline(step.points, options);
+       routeLine = new L.polyline(step.points, options);
        routeLine.addTo(map);
     }
   }
@@ -254,6 +280,7 @@ locationServices.routeSimPOI = function() {
   }
 }
 
+// Get all nearby POI to user location
 locationServices.getPOI = function() {
 
   if ("geolocation" in navigator) {
@@ -296,7 +323,7 @@ locationServices.getPOI = function() {
               map.openPopup("Searching...", pos);
 
               var callback = displaySearchResults;
-              var options = { range: 100000, number: 5 };
+              var options = { range: 100000, number: 10 };
               pos = {lat: pos[0], lng: pos[1]};
               poiApi.searchTags([], pos, callback, options);
           }
@@ -310,18 +337,16 @@ locationServices.getPOI = function() {
     /* geolocation IS NOT available */
     console.log("Location Services is not enabled.");
   }
-
-
-
 }
 
+//Simulate getPOI with user location in Dundee
 locationServices.getPOI_sim = function() {
 
     /* geolocation is available */
     navigator.geolocation.getCurrentPosition(function(position) {
       var userPos = simPos;
       map.setView(userPos);
-      var poiApi = new WrldPoiApi(apiKey);
+
       var markers = [];
       function displaySearchResults(success, results) {
         map.closePopup();
@@ -356,7 +381,7 @@ locationServices.getPOI_sim = function() {
               map.openPopup("Searching...", pos);
 
               var callback = displaySearchResults;
-              var options = { range: 100000, number: 5 };
+              var options = { range: 100000, number: 15 };
               pos = {lat: pos[0], lng: pos[1]};
               poiApi.searchTags([], pos, callback, options);
           }
@@ -367,9 +392,9 @@ locationServices.getPOI_sim = function() {
           //map.on("click", searchPoisAroundClick);
     });
 
-
 }
 
+//Deprecated, do not use.
 locationServices.getIndoorRouteOnClick = function() {
   var startInd = 0;
   var endInd = 0;
@@ -387,17 +412,55 @@ locationServices.getIndoorRouteOnClick = function() {
   }
 }
 
+//Get indoor routes from startName to endName
 locationServices.getIndoorRoute = function(startName, endName) {
-  var startLoc = sN[startName];
-  var endLoc = sn[endName];
 
-  var routeLines = [];
+  //console.log("user", userPos);
+
+  //var startMarker = 0;
+
+  /*var markers = [];
+
+  function searchPoisAroundClick(pos, str) {
+      markers.forEach(function(marker) { marker.remove(); });
+      //map.openPopup("Searching...", pos);
+
+      var callback = function(success, results) {
+          if (success) {
+            //mark = results[0];
+            results.forEach(function(result) {
+              if (result["title"] == str) {
+                startMarker = L.marker([result["lat"], result["lon"], result["alt"]], {
+                  title: result["title"],
+                  elevation: result["height_offset"],
+                }).addTo(map);
+              }
+            })
+          } else {
+            console.log(results);
+          }
+      }
+      var options = { range: 1000, number: 100};
+      pos = {lat: pos[0], lng: pos[1]};
+      //poiApi.searchTags([], pos, callback, options);
+      console.log(str);
+      console.log(pos);
+
+      poiApi.searchTags([], pos, callback, options);
+  }
+
+  searchPoisAroundClick(userPos, startName);
+*/
+  var startLoc = sN[startName];
+  var endLoc = sN[endName];
+  routeLines = [];
+
 
      var _onRoutesLoaded = function(routes) {
          // Each step in the route will be on a single floor.
          for (var stepIndex = 0; stepIndex < routes[0].length; ++stepIndex) {
             var step = routes[0][stepIndex];
-            routeLine = new L.polyline(step.points,
+            var routeLine = new L.polyline(step.points,
             {
               indoorMapId: step.indoorMapId,
               indoorMapFloorId: step.indoorMapFloorId
@@ -407,9 +470,19 @@ locationServices.getIndoorRoute = function(startName, endName) {
          }
      }
 
+     //console.log(startMarker);
+
+     /*var startLoc = startMarker.getLatLng();
+
+     searchPoisAroundClick(userPos, endName);
+
+     var endLoc = startMarker.getLatLng();*/
+
      var getRoute = function() {
        map.routes.getRoute([startLoc, endLoc], _onRoutesLoaded);
      }
+
+     getRoute();
 
 
 }
