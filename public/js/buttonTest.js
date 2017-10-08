@@ -7,7 +7,8 @@ var micdiv = $('#voice')
 
 micdiv.css('left', ($(window).width()-micdiv.width())/2)
 
-var recLink = 'ws'+String(window.location).replace('http', '').replace('1500', '3000');
+var recLink = 'ws'+String(window.location).replace('http', '').replace('1500/', '3000');
+console.log(recLink)
 
 var colorChangeSpeed = 500
 var divHeightChangeSpeed = 650 
@@ -16,7 +17,7 @@ var recording = false
 var pulse = null
 
 var recorder = new RecordAudio();
-var receiver = new WebSocket('ws://localhost:3000');
+var receiver = new WebSocket(recLink);
 receiver.addEventListener('message', function(event){
 	data = JSON.parse(event.data);
 	console.log(data);
@@ -100,7 +101,7 @@ function RecordAudio() {
   var that = this;
 
   client.on('open', function() {
-    var Stream = that.Stream = client.createStream();
+    var Stream = that.Stream = null;
 
     if (!navigator.getUserMedia)
       navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -115,6 +116,7 @@ function RecordAudio() {
     var recording = false;
 
     that.start = function() {
+    	Stream = that.Stream = client.createStream();
       recording = true;
     }
 
