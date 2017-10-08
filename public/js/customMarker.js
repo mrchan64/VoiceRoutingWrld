@@ -3,17 +3,30 @@ var twitmarkers = {};
 var seed = 1;
 
 twitmarkers.generate = function(location, text){
-  console.log(location)
-  var icon = L.icon({
-    iconUrl: 'images/twitter.png',
-    shadowUrl: 'images/twitter-shadow.png',
+  var icon = null;
+  if(random()<.8){
+    icon = L.icon({
+      iconUrl: 'images/twitter.png',
+      shadowUrl: 'images/twitter-shadow.png',
 
-    iconSize:     [50, 60], // size of the icon
-    shadowSize:   [50, 50], // size of the shadow
-    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-    shadowAnchor: [-5, 84],  // the same for the shadow
-    popupAnchor:  [-3, -100] // point from which the popup should open relative to the iconAnchor
-  });
+      iconSize:     [50, 60], // size of the icon
+      shadowSize:   [50, 50], // size of the shadow
+      iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+      shadowAnchor: [-5, 84],  // the same for the shadow
+      popupAnchor:  [-3, -100] // point from which the popup should open relative to the iconAnchor
+    });
+  }else{
+    icon = L.icon({
+      iconUrl: 'images/spark.png',
+      shadowUrl: 'images/spark-shadow.png',
+
+      iconSize:     [50, 60], // size of the icon
+      shadowSize:   [50, 50], // size of the shadow
+      iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+      shadowAnchor: [-5, 84],  // the same for the shadow
+      popupAnchor:  [-3, -100] // point from which the popup should open relative to the iconAnchor
+    });
+  }
 
   var marker = L.marker(location, {icon: icon, riseOnHover: true});
   marker.addTo(map);

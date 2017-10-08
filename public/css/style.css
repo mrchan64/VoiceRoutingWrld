@@ -51,6 +51,7 @@ body {
   border-radius: 15px;
   box-shadow: 6px 5px 25px -4px rgba(0,0,0,0.77);
   overflow: visible !important;
+  z-index: 100;
 }
 #voice .mic {
   border: none;
