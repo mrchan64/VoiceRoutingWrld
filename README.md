@@ -3,7 +3,7 @@
 October 2017
 
 ### Authors
-This is the Calhacks 2017 project created by Justin Wang, Amarinder Chahal, Darren Huang, Matthew Chan. 
+This is the Calhacks 2017 project created by Justin Wang, Amarinder Chahal, Darren Huang, and Matthew Chan. 
 
 ### About
 Through the use of WRLD, Google Cloud, and an amalgamation of other API's, we designed an interface with the goal of virtualizing travel and exploration in three dimensions.  Through this implementation of WRLD and the various social databases we accessed, we have created a user-friendly interface designed to help people experience, understand, and stay connected in the world at the convenience of the internet.
@@ -19,9 +19,9 @@ Some key features we have:
 
 ### Inspiration
 
-Google Maps provides a competitively dominating 2-dimensional mapping service, which is extremely convenient for the user in many situations. However, it falls short in it's presence in the real world--it cannot consider the indoors or vertical positioning. This leads to a much larger missed chance at discovering data patterns in companies regarding employee performance, user activity patterns, and population dynamics and regulation, among other things.Additionally, the simple but powerful feature of indoor map routing could easily prove revolutionary in its own right.
+Google Maps provides a competitively dominating 2-dimensional mapping service, which is extremely convenient for the user in many situations. However, it falls short in its presence in the real world--it cannot consider the indoors or vertical positioning. This leads to a much larger missed chance at discovering data patterns in companies regarding employee performance, user activity patterns, and population dynamics and regulation, among other things. Additionally, the simple but powerful feature of indoor map routing could easily prove revolutionary in its own right.
 
-We strived to take advantage of these unique features the WRLD API provides. In addition to social media heatmaps and recent user activity, a large goal of our product was taking the target audience of WRLD from mainly companies and designers to the average everyday user. They are empowered by the convenience and ease provided by the 3d rendering of the world, all done through simple, everyday user interactions and dialogue. 
+We strived to take advantage of these unique features the WRLD API provides. In addition to recent user activity, a large goal of our product was taking the target audience of WRLD from mainly companies and designers to the average everyday user. They are empowered by the convenience and ease provided by the 3d rendering of the world, all done through simple, everyday user interactions and dialogue. 
 
 ### How It Works
 
@@ -42,7 +42,7 @@ Part 4 is straightforward. We reset necessary variables and objects in the rende
 
 ### Uses of the Social Media Extension
 
-The social media extension has two main goals. The first is the visualization of data to help find patterns through big data regarding certain topics. The user searches through various tweets and retweets under a certain hashtag in a certain time-periods. This data is not limited to large analysis for use either; our second goal is to demonstrate its use to everyday users. Users can use it to follow the travels of a friend in a 3-dimensional world, see the divide of opinions over different states under a political hashtag, receive alerts of nearby activity (or potential protests, local distasters, etc.), and much, much more.
+The social media extension has two main goals. The first is the visualization of data to help find patterns through big data regarding certain topics. The user searches through various tweets and retweets under a certain hashtag in a certain time-period. This data is not limited to large analysis for use either; our second goal is to demonstrate its use to everyday users. Users can use it to follow the travels of a friend in a 3-dimensional world, see the divide of opinions over different states under a political hashtag, receive alerts of nearby activity (or potential protests, local distasters, etc.), and much, much more.
 
 Though related, the Cisco Spark Implementation has a different intention, more directed towards businesses. Companies can view the location data and timestamps of employees automatically to determine peak efficiency hour, or when employees have been less honest with their bosses about meeting attendance. This helps strengthen the bond between manager and employee, keeping both connected and raising overall efficiency. Note that this is a work in progress.
 
