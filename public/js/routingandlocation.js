@@ -1,9 +1,6 @@
-var apiKey = "60308764d26b82e014649973d6901157";
-
 var link = "https://maps.googleapis.com/maps/api/geocode/json";
-var googleKey = "key=AIzaSyBb4UGmjxCC9vVr54OLyMtlSrLGORNi0sA";
 
-var poiApi = new WrldPoiApi(apiKey);
+var poiApi = new WrldPoiApi(WrldKey);
 
 var locationServices = {};
 var userPos = [];
@@ -37,7 +34,7 @@ var endInd = 0;
 var control = 0;
 
 locationServices.formRequest = function(searchTerm){
-  var finalLink = link+"?address="+searchTerm+"&"+googleKey;
+  var finalLink = link+"?address="+searchTerm+"&"+GoogleKey;
   var ret = "";
   $.ajax({
     url: finalLink,
@@ -332,7 +329,7 @@ locationServices.getPOI = function() {
     navigator.geolocation.getCurrentPosition(function(position) {
       var userPos = [position.coords.latitude, position.coords.longitude];
       map.setView(userPos);
-      var poiApi = new WrldPoiApi(apiKey);
+      var poiApi = new WrldPoiApi(WrldKey);
       var markers = [];
       function displaySearchResults(success, results) {
         map.closePopup();
