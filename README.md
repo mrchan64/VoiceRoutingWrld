@@ -1,5 +1,7 @@
 # The Voice Heard 'Round the WRLD
 
+## Winner of the WRLD API Prize at CalHacks 4.0
+
 October 2017
 
 ### Authors
